@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Focus together — Focus Sprint</title>
+<!-- "Focus together" links from the app (lib/domain/together.dart): ?e=<end, Unix seconds>&m=<minutes>.
+     Everything happens in this page: no cookies, no analytics, nothing is sent anywhere. -->
+<style>
+:root{--bg:#fbfaff;--ink:#231d3d;--muted:#6a6390;--accent:#6c4ce0;--sun:#ffc531;--sunInk:#2b2100;--card:#fff;--line:#e6e1f7}
+@media (prefers-color-scheme:dark){:root{--bg:#17132b;--ink:#f1eeff;--muted:#a9a1d6;--accent:#b4a2ff;--card:#211b3c;--line:#342b5c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:40px 16px 56px;text-align:center}
+.spark{font-size:64px;line-height:1}h1{font-size:26px;margin:16px 0 6px}
+.clock{font-size:64px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:1px;margin:18px 0 4px}
+.muted{color:var(--muted)}.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px 18px;margin-top:22px}
+.btn{display:block;text-decoration:none;font-weight:800;border-radius:16px;padding:15px 18px;margin:12px 0 0}
+.primary{background:var(--sun);color:var(--sunInk)}.secondary{border:2px solid var(--line);color:var(--accent)}
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin:14px 0 0}.bar i{display:block;height:100%;background:var(--accent);width:0}
+</style></head>
+<body><main>
+<div class="spark" aria-hidden="true">✨</div>
+<h1 id="title"></h1>
+<p class="muted" id="body"></p>
+<div class="clock" id="clock" aria-live="off"></div>
+<div class="bar" aria-hidden="true"><i id="bar"></i></div>
+<div class="card">
+  <p id="tip" class="muted" style="margin:0"></p>
+  <a class="btn primary" id="open" href="#"></a>
+  <a class="btn secondary" id="get" href="https://play.google.com/store/apps/details?id=com.andrii.focus_sprint"></a>
+</div>
+</main>
+<script>
+var T = {
+ en:{title:"A friend is focusing with you",body:"Same sprint, same finish line: {t}. Do one small thing until then.",ended:"This sprint is over",endedBody:"It ended at {t}. Start your own: five minutes is enough.",bad:"This link looks broken",badBody:"Ask your friend to send it again.",tip:"Focus right here, or join in the app: it ends with your friend's.",open:"Join in Focus Sprint",get:"Get Focus Sprint (Android)"},
+ uk:{title:"Друг фокусується разом із тобою",body:"Той самий спринт, той самий фініш: {t}. Зроби до того одну маленьку справу.",ended:"Цей спринт уже закінчився",endedBody:"Він закінчився о {t}. Почни свій: п'яти хвилин досить.",bad:"Схоже, посилання пошкоджене",badBody:"Попроси друга надіслати його ще раз.",tip:"Фокусуйся просто тут або приєднуйся в застосунку: він закінчиться разом із другом.",open:"Приєднатися у Focus Sprint",get:"Завантажити Focus Sprint (Android)"},
+ es:{title:"Un amigo se concentra contigo",body:"Mismo sprint, misma meta: {t}. Haz una cosa pequeña hasta entonces.",ended:"Este sprint ya terminó",endedBody:"Terminó a las {t}. Empieza el tuyo: cinco minutos bastan.",bad:"Este enlace parece roto",badBody:"Pide a tu amigo que lo envíe otra vez.",tip:"Concéntrate aquí mismo o únete en la app: termina a la vez que el de tu amigo.",open:"Unirme en Focus Sprint",get:"Descargar Focus Sprint (Android)"},
+ pt:{title:"Um amigo está focando com você",body:"Mesmo sprint, mesma chegada: {t}. Faça uma coisa pequena até lá.",ended:"Este sprint já acabou",endedBody:"Acabou às {t}. Comece o seu: cinco minutos bastam.",bad:"Este link parece quebrado",badBody:"Peça ao seu amigo para enviar de novo.",tip:"Foque aqui mesmo ou entre no app: termina junto com o do seu amigo.",open:"Entrar no Focus Sprint",get:"Baixar o Focus Sprint (Android)"},
+ fr:{title:"Un ami se concentre avec toi",body:"Même sprint, même arrivée : {t}. Fais une petite chose d'ici là.",ended:"Ce sprint est terminé",endedBody:"Il s'est terminé à {t}. Lance le tien : cinq minutes suffisent.",bad:"Ce lien semble cassé",badBody:"Demande à ton ami de le renvoyer.",tip:"Concentre-toi ici, ou rejoins-le dans l'appli : il finit en même temps que celui de ton ami.",open:"Rejoindre dans Focus Sprint",get:"Installer Focus Sprint (Android)"},
+ de:{title:"Jemand fokussiert mit dir",body:"Gleicher Sprint, gleiches Ziel: {t}. Mach bis dahin eine kleine Sache.",ended:"Dieser Sprint ist vorbei",endedBody:"Er endete um {t}. Starte deinen eigenen: fünf Minuten reichen.",bad:"Der Link scheint kaputt zu sein",badBody:"Bitte deinen Freund, ihn noch einmal zu schicken.",tip:"Fokussiere direkt hier oder steig in der App ein: er endet zusammen mit dem deines Freundes.",open:"In Focus Sprint mitmachen",get:"Focus Sprint holen (Android)"},
+ it:{title:"Un amico si concentra con te",body:"Stesso sprint, stesso traguardo: {t}. Fai una piccola cosa fino ad allora.",ended:"Questo sprint è finito",endedBody:"È finito alle {t}. Inizia il tuo: bastano cinque minuti.",bad:"Questo link sembra rotto",badBody:"Chiedi al tuo amico di rimandarlo.",tip:"Concentrati qui o unisciti nell'app: finisce insieme a quello del tuo amico.",open:"Unisciti in Focus Sprint",get:"Scarica Focus Sprint (Android)"},
+ pl:{title:"Znajomy skupia się razem z tobą",body:"Ten sam sprint, ta sama meta: {t}. Zrób do tego czasu jedną małą rzecz.",ended:"Ten sprint już się skończył",endedBody:"Skończył się o {t}. Zacznij własny: pięć minut wystarczy.",bad:"Ten link wygląda na uszkodzony",badBody:"Poproś znajomego, by wysłał go jeszcze raz.",tip:"Skup się tutaj albo dołącz w aplikacji: skończy się razem ze sprintem znajomego.",open:"Dołącz w Focus Sprint",get:"Pobierz Focus Sprint (Android)"},
+ tr:{title:"Bir arkadaşın seninle odaklanıyor",body:"Aynı sprint, aynı bitiş: {t}. O zamana kadar küçük bir iş yap.",ended:"Bu sprint bitti",endedBody:"{t} itibarıyla bitti. Kendi sprintini başlat: beş dakika yeter.",bad:"Bu bağlantı bozuk görünüyor",badBody:"Arkadaşından tekrar göndermesini iste.",tip:"Burada odaklan ya da uygulamada katıl: arkadaşınınkiyle birlikte biter.",open:"Focus Sprint'te katıl",get:"Focus Sprint'i indir (Android)"},
+ ja:{title:"友だちがいっしょに集中しています",body:"同じスプリント、同じゴール：{t}。それまでに小さなことを1つ。",ended:"このスプリントは終わりました",endedBody:"{t}に終わりました。自分のスプリントを始めよう：5分で十分。",bad:"リンクが壊れているようです",badBody:"友だちにもう一度送ってもらってください。",tip:"ここで集中するか、アプリで参加：友だちと同じ時間に終わります。",open:"Focus Sprintで参加",get:"Focus Sprintを入手（Android）"},
+ ko:{title:"친구가 함께 집중하고 있어요",body:"같은 스프린트, 같은 결승선: {t}. 그때까지 작은 일 하나만 해요.",ended:"이 스프린트는 끝났어요",endedBody:"{t}에 끝났어요. 내 스프린트를 시작해요: 5분이면 충분해요.",bad:"링크가 깨진 것 같아요",badBody:"친구에게 다시 보내 달라고 하세요.",tip:"여기서 바로 집중하거나 앱에서 참여하세요: 친구와 같은 때 끝나요.",open:"Focus Sprint에서 참여",get:"Focus Sprint 받기 (Android)"},
+ zh:{title:"朋友正在和你一起专注",body:"同一个冲刺，同一个终点：{t}。在那之前做一件小事。",ended:"这个冲刺已经结束",endedBody:"它在 {t} 结束了。开始你自己的吧：五分钟就够。",bad:"这个链接好像坏了",badBody:"请朋友再发一次。",tip:"就在这里专注，或在应用里加入：和朋友同时结束。",open:"在 Focus Sprint 中加入",get:"获取 Focus Sprint（Android）"}
+};
+var lang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+var s = T[lang] || T.en;
+document.documentElement.lang = T[lang] ? lang : 'en';
+var q = new URLSearchParams(location.search);
+var e = parseInt(q.get('e'), 10), m = parseInt(q.get('m'), 10);
+var ok = e > 0 && m >= 1 && m <= 1440;
+var end = new Date(e * 1000);
+function $(id){ return document.getElementById(id); }
+function hhmm(d){ return d.toLocaleTimeString(navigator.language || 'en', {hour: '2-digit', minute: '2-digit'}); }
+function pad(n){ return (n < 10 ? '0' : '') + n; }
+$('tip').textContent = s.tip;
+$('get').textContent = s.get;
+if (ok) {
+  $('open').href = 'focussprint://open/join?e=' + e + '&m=' + m;
+  $('open').textContent = s.open;
+} else {
+  $('open').remove();
+}
+function render(){
+  if (!ok) { $('title').textContent = s.bad; $('body').textContent = s.badBody; $('clock').textContent = ''; return; }
+  var left = Math.max(0, Math.round((end - Date.now()) / 1000));
+  if (left <= 0) {
+    $('title').textContent = s.ended; $('body').textContent = s.endedBody.replace('{t}', hhmm(end));
+    $('clock').textContent = '00:00'; $('bar').style.width = '100%';
+    var o = $('open'); if (o) o.remove();
+    return;
+  }
+  $('title').textContent = s.title; $('body').textContent = s.body.replace('{t}', hhmm(end));
+  var h = Math.floor(left / 3600), mm = Math.floor(left % 3600 / 60), ss = left % 60;
+  $('clock').textContent = (h ? h + ':' + pad(mm) : pad(mm)) + ':' + pad(ss);
+  $('bar').style.width = Math.min(100, 100 * (1 - left / (m * 60))) + '%';
+  document.title = $('clock').textContent + ' · Focus together';
+  setTimeout(render, 1000);
+}
+render();
+</script>
+</body></html>
