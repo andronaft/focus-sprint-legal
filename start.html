@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Start a sprint — Focus Sprint</title>
+<!-- Desk sticker QR codes from the app (lib/domain/start_link.dart): ?m=<minutes>&t=<task>.
+     The page only opens the app. No cookies, no analytics, nothing is sent anywhere. -->
+<style>
+:root{--bg:#fbfaff;--ink:#231d3d;--muted:#6a6390;--accent:#6c4ce0;--sun:#ffc531;--sunInk:#2b2100;--card:#fff;--line:#e6e1f7}
+@media (prefers-color-scheme:dark){:root{--bg:#17132b;--ink:#f1eeff;--muted:#a9a1d6;--accent:#b4a2ff;--card:#211b3c;--line:#342b5c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:40px 16px 56px;text-align:center}
+.spark{font-size:64px;line-height:1}h1{font-size:26px;margin:16px 0 6px}
+.muted{color:var(--muted)}.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px 18px;margin-top:22px}
+.btn{display:block;text-decoration:none;font-weight:800;border-radius:16px;padding:15px 18px;margin:12px 0 0}
+.primary{background:var(--sun);color:var(--sunInk)}.secondary{border:2px solid var(--line);color:var(--accent)}
+</style></head>
+<body><main>
+<div class="spark" aria-hidden="true">⚡</div>
+<h1 id="title"></h1>
+<p class="muted" id="body"></p>
+<div class="card">
+  <a class="btn primary" id="open" href="#"></a>
+  <a class="btn secondary" id="get" href="https://play.google.com/store/apps/details?id=com.andrii.focus_sprint"></a>
+</div>
+</main>
+<script>
+var T = {
+ en:{title:"Start a sprint",body:"{m} min",task:"{m} min on “{t}”",usual:"Your usual sprint",open:"Start in Focus Sprint",get:"Get Focus Sprint (Android)"},
+ uk:{title:"Почати спринт",body:"{m} хв",task:"{m} хв на «{t}»",usual:"Твій звичний спринт",open:"Почати у Focus Sprint",get:"Завантажити Focus Sprint (Android)"},
+ es:{title:"Empieza un sprint",body:"{m} min",task:"{m} min para «{t}»",usual:"Tu sprint de siempre",open:"Empezar en Focus Sprint",get:"Descargar Focus Sprint (Android)"},
+ pt:{title:"Comece um sprint",body:"{m} min",task:"{m} min em “{t}”",usual:"Seu sprint de sempre",open:"Começar no Focus Sprint",get:"Baixar o Focus Sprint (Android)"},
+ fr:{title:"Lance un sprint",body:"{m} min",task:"{m} min sur « {t} »",usual:"Ton sprint habituel",open:"Lancer dans Focus Sprint",get:"Installer Focus Sprint (Android)"},
+ de:{title:"Sprint starten",body:"{m} Min.",task:"{m} Min. für „{t}“",usual:"Dein üblicher Sprint",open:"In Focus Sprint starten",get:"Focus Sprint holen (Android)"},
+ it:{title:"Inizia uno sprint",body:"{m} min",task:"{m} min su «{t}»",usual:"Il tuo solito sprint",open:"Inizia in Focus Sprint",get:"Scarica Focus Sprint (Android)"},
+ pl:{title:"Zacznij sprint",body:"{m} min",task:"{m} min na „{t}”",usual:"Twój zwykły sprint",open:"Zacznij w Focus Sprint",get:"Pobierz Focus Sprint (Android)"},
+ tr:{title:"Sprint başlat",body:"{m} dk",task:"“{t}” için {m} dk",usual:"Her zamanki sprintin",open:"Focus Sprint'te başlat",get:"Focus Sprint'i indir (Android)"},
+ ja:{title:"スプリントを始める",body:"{m}分",task:"「{t}」に{m}分",usual:"いつものスプリント",open:"Focus Sprintで始める",get:"Focus Sprintを入手（Android）"},
+ ko:{title:"스프린트 시작",body:"{m}분",task:"‘{t}’에 {m}분",usual:"평소 스프린트",open:"Focus Sprint에서 시작",get:"Focus Sprint 받기 (Android)"},
+ zh:{title:"开始一个冲刺",body:"{m} 分钟",task:"“{t}”：{m} 分钟",usual:"你的常用冲刺",open:"在 Focus Sprint 中开始",get:"获取 Focus Sprint（Android）"}
+};
+var lang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+var s = T[lang] || T.en;
+document.documentElement.lang = T[lang] ? lang : 'en';
+var q = new URLSearchParams(location.search);
+var m = parseInt(q.get('m'), 10), t = (q.get('t') || '').slice(0, 80);
+var link = new URLSearchParams();
+if (m >= 5 && m <= 90) link.set('m', String(m)); else m = NaN;
+if (t) link.set('t', t);
+var app = 'focussprint://open/start' + (link.toString() ? '?' + link.toString() : '');
+function $(id){ return document.getElementById(id); }
+$('title').textContent = s.title;
+$('body').textContent = isNaN(m) ? (t ? '“' + t + '”' : s.usual) : (t ? s.task : s.body).replace('{m}', m).replace('{t}', t);
+$('open').href = app;
+$('open').textContent = s.open;
+$('get').textContent = s.get;
+// Scanned with the app installed: go straight in.
+location.href = app;
+</script>
+</body></html>
